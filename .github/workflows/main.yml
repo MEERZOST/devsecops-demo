@@ -31,9 +31,9 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t nexus.sverahtin.com:8081/lab-work-app:${{ github.sha }} -t nexus.sverahtin.com:8081/lab-work-app:latest nginx
+          docker build -t nexus.sverahtin.com/lab-work-app:${{ github.sha }} -t nexus.sverahtin.com/lab-work-app:latest nginx
 
       - name: Push Image to Nexus
         run: |
-          docker push nexus.sverahtin.com:8081/lab-work-app:${{ github.sha }}
-          docker push nexus.sverahtin.com:8081/lab-work-app:latest
+          docker push nexus.sverahtin.com/lab-work-app:${{ github.sha }}
+          docker push nexus.sverahtin.com/lab-work-app:latest
