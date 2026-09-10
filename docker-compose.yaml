@@ -1,0 +1,59 @@
+networks:
+  fron-net:
+    driver: bridge
+  back-net:
+    driver: bridge
+
+services:
+  nginx:
+    build: ./nginx
+    container_name: dev_nginx
+    ports:
+      - "80:80" #Site
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+    depends_on:
+      - sonarqube
+      - nexus
+      - minio
+    networks:
+      - back-net
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: dev_sonarqube
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - back-net
+
+  nexus:
+    image: sonatype/nexus3:latest
+    container_name: dev_nexus
+    volumes:
+      - nexus_data:/nexus-data
+    networks:
+      - back-net
+
+  minio:
+    image: minio/minio:latest
+    container_name: dev_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: "minioadmin"
+      MINIO_ROOT_PASSWORD: "minioadminpassword"
+    volumes:
+      - minio_data:/data
+    networks:
+      - back-net
+
+volumes:
+  sonarqube_data:       # Хранилище данных SonarQube
+  sonarqube_extensions: # Хранилище плагинов SonarQube
+  sonarqube_logs:       # Хранилище логов SonarQube
+  nexus_data:           # Хранилище репозиториев Nexus
+  minio_data:           # Хранилище S3-бакетов MinIO
