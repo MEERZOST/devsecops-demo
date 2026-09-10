@@ -32,4 +32,3 @@ jobs:
         run: |
           docker push nexus.sverahtin.com:8081/lab-work-app:${{ github.sha }}
           docker push nexus.sverahtin.com:8081/lab-work-app:latest
-EOF
