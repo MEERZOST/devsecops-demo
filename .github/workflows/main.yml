@@ -1,4 +1,3 @@
-cat << 'EOF' > .github/workflows/main.yml
 name: "DevSecOps CI CD Pipeline"
 
 on:
