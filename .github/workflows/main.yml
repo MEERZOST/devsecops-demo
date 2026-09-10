@@ -1,12 +1,13 @@
 cat << 'EOF' > .github/workflows/main.yml
-name: "DevSecOps CI Pipeline"
+name: "DevSecOps CI CD Pipeline"
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  sonarqube-analysis:
+  build-and-test:
     runs-on: self-hosted
     steps:
       - name: Checkout repository
@@ -23,4 +24,13 @@ jobs:
             -Dsonar.projectKey=Lab-Work-DevSecOps \
             -Dsonar.projectName="Lab Work DevSecOps" \
             -Dsonar.sources=.
+
+      - name: Build Docker Image
+        run: |
+          docker build -t nexus.sverahtin.com:8081/lab-work-app:${{ github.sha }} -t nexus.sverahtin.com:8081/lab-work-app:latest .
+
+      - name: Push Image to Nexus
+        run: |
+          docker push nexus.sverahtin.com:8081/lab-work-app:${{ github.sha }}
+          docker push nexus.sverahtin.com:8081/lab-work-app:latest
 EOF
