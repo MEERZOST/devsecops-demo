@@ -1,0 +1,26 @@
+cat << 'EOF' > .github/workflows/main.yml
+name: DevSecOps CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  sonarqube-analysis:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: SonarQube Code Analysis
+        run: |
+          docker run --rm \
+            --network lab_work_back-net \
+            -v ${{ github.workspace }}:/usr/src \
+            sonarsource/sonar-scanner-cli \
+            -Dsonar.host.url=http://sonarqube:9000 \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.projectKey=Lab-Work-DevSecOps \
+            -Dsonar.projectName="Lab Work DevSecOps" \
+            -Dsonar.sources=.
+EOF
